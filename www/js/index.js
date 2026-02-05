@@ -35,10 +35,28 @@ var app = {
     initApp: function() {
         // Bind event listeners
         document.getElementById('checkInBtn').addEventListener('click', this.checkIn.bind(this));
+        document.getElementById('goalSettingBtn').addEventListener('click', this.openGoalModal.bind(this));
+        document.getElementById('modalClose').addEventListener('click', this.closeGoalModal.bind(this));
+        document.getElementById('btnCancel').addEventListener('click', this.closeGoalModal.bind(this));
+        document.getElementById('btnConfirm').addEventListener('click', this.saveGoal.bind(this));
+
+        // Bind preset buttons
+        var presetButtons = document.querySelectorAll('.preset-btn');
+        for (var i = 0; i < presetButtons.length; i++) {
+            presetButtons[i].addEventListener('click', this.selectPreset.bind(this));
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('goalModal').addEventListener('click', function(e) {
+            if (e.target.id === 'goalModal') {
+                app.closeGoalModal();
+            }
+        });
 
         // Load and display records
         this.loadRecords();
         this.updateTodayCount();
+        this.updateGoalProgress();
 
         // Update motivational message
         this.updateMotivationalMessage();
@@ -274,6 +292,9 @@ var app = {
 
         // Update motivational message based on count
         this.updateMotivationalMessageByCount(count);
+
+        // Update goal progress
+        this.updateGoalProgress();
     },
 
     // Update motivational message based on count
@@ -293,6 +314,134 @@ var app = {
         }
 
         messageElement.textContent = message;
+    },
+
+    // Get daily goal
+    getDailyGoal: function() {
+        var goal = localStorage.getItem('dailyGoal');
+        return goal ? parseInt(goal) : 8; // Default 8 times
+    },
+
+    // Set daily goal
+    setDailyGoal: function(goal) {
+        localStorage.setItem('dailyGoal', goal.toString());
+    },
+
+    // Update goal progress
+    updateGoalProgress: function() {
+        var todayCount = this.getTodayCount();
+        var dailyGoal = this.getDailyGoal();
+
+        // Update goal display
+        document.getElementById('goalCurrent').textContent = todayCount;
+        document.getElementById('goalTarget').textContent = dailyGoal;
+
+        // Calculate progress percentage
+        var percentage = Math.min(Math.round((todayCount / dailyGoal) * 100), 100);
+
+        // Update progress bar
+        var progressFill = document.getElementById('progressFill');
+        var progressText = document.getElementById('progressText');
+
+        progressFill.style.width = percentage + '%';
+        progressText.textContent = percentage + '%';
+
+        // Mark as complete if goal reached
+        if (todayCount >= dailyGoal) {
+            progressFill.setAttribute('data-complete', 'true');
+            progressText.style.color = 'white';
+        } else {
+            progressFill.removeAttribute('data-complete');
+            progressText.style.color = '#333';
+        }
+    },
+
+    // Get today's count
+    getTodayCount: function() {
+        var records = this.getRecords();
+        var today = this.formatDate(new Date());
+        var count = 0;
+
+        for (var i = 0; i < records.length; i++) {
+            if (records[i].date === today) {
+                count++;
+            }
+        }
+
+        return count;
+    },
+
+    // Open goal setting modal
+    openGoalModal: function() {
+        var modal = document.getElementById('goalModal');
+        var input = document.getElementById('goalInput');
+        var currentGoal = this.getDailyGoal();
+
+        input.value = currentGoal;
+        modal.classList.add('show');
+    },
+
+    // Close goal setting modal
+    closeGoalModal: function() {
+        var modal = document.getElementById('goalModal');
+        modal.classList.remove('show');
+    },
+
+    // Select preset goal
+    selectPreset: function(event) {
+        var value = event.target.getAttribute('data-value');
+        document.getElementById('goalInput').value = value;
+    },
+
+    // Save goal
+    saveGoal: function() {
+        var input = document.getElementById('goalInput');
+        var newGoal = parseInt(input.value);
+
+        // Validate input
+        if (isNaN(newGoal) || newGoal < 1 || newGoal > 20) {
+            alert('请输入1-20之间的数字');
+            return;
+        }
+
+        // Save goal
+        this.setDailyGoal(newGoal);
+
+        // Update progress
+        this.updateGoalProgress();
+
+        // Close modal
+        this.closeGoalModal();
+
+        // Show success message
+        this.showGoalUpdateMessage(newGoal);
+    },
+
+    // Show goal update message
+    showGoalUpdateMessage: function(goal) {
+        var message = document.createElement('div');
+        message.textContent = '✓ 目标已更新为 ' + goal + ' 次/天';
+        message.style.position = 'fixed';
+        message.style.top = '50%';
+        message.style.left = '50%';
+        message.style.transform = 'translate(-50%, -50%)';
+        message.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+        message.style.color = 'white';
+        message.style.padding = '15px 30px';
+        message.style.borderRadius = '50px';
+        message.style.fontSize = '16px';
+        message.style.fontWeight = 'bold';
+        message.style.boxShadow = '0 10px 30px rgba(102, 126, 234, 0.5)';
+        message.style.zIndex = '99999';
+        message.style.animation = 'successMessageFade 2s ease-out';
+
+        document.body.appendChild(message);
+
+        setTimeout(function() {
+            if (message.parentNode) {
+                message.parentNode.removeChild(message);
+            }
+        }, 2000);
     }
 };
 
