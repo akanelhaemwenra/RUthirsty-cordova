@@ -3,11 +3,16 @@ set -e
 #!/bin/bash
 
 # 设置环境变量
-export ANTHROPIC_AUTH_TOKEN=sk-m9Hah02rnc5TvJrO47D0B2F2F2D64cB788B29777A4B04dD9
-export ANTHROPIC_BASE_URL=https://apiHK.Ai
+# export ANTHROPIC_AUTH_TOKEN=sk-m9Hah02rnc5TvJrO47D0B2F2F2D64cB788B29777A4B04dD9
+# export ANTHROPIC_BASE_URL=https://apiHK.Ai
 # 备选API线路（去掉下面两行注释生效）
 # export ANTHROPIC_AUTH_TOKEN=sk-BnACKGNS5fruSd9Mmm2cH4MuLXGR27sB0md9KsYN6fvR4CYi
 # export ANTHROPIC_BASE_URL=https://xinghuapi.com
+# 演练配置：
+export ANTHROPIC_AUTH_TOKEN=sk-m9Hah02rnc5TvJrO47D0B2F2F2D64cB788B29777A4B04dD9
+export ANTHROPIC_BASE_URL=https://new.aicode.us.com
+export CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS=1
+export CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000
 
 first_run=false
 # 检查claude是否已安装
