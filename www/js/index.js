@@ -237,23 +237,27 @@ var app = {
         var timestamp = parseInt(event.target.getAttribute('data-timestamp'));
         var records = this.getRecords();
 
-        // Filter out the record to delete
-        var filteredRecords = [];
-        for (var i = 0; i < records.length; i++) {
-            if (records[i].timestamp !== timestamp) {
-                filteredRecords.push(records[i]);
-            }
-        }
-
-        // Save updated records
-        this.saveRecords(filteredRecords);
-
-        // Update UI
-        this.loadRecords();
-        this.updateTodayCount();
-
-        // Show delete feedback
+        // Show delete feedback animation first
         this.showDeleteFeedback(event.target);
+
+        // Wait for animation to complete before updating
+        var self = this;
+        setTimeout(function() {
+            // Filter out the record to delete
+            var filteredRecords = [];
+            for (var i = 0; i < records.length; i++) {
+                if (records[i].timestamp !== timestamp) {
+                    filteredRecords.push(records[i]);
+                }
+            }
+
+            // Save updated records
+            self.saveRecords(filteredRecords);
+
+            // Update UI
+            self.loadRecords();
+            self.updateTodayCount();
+        }, 300); // Match animation duration
     },
 
     // Show delete feedback
@@ -293,8 +297,8 @@ var app = {
         // Update motivational message based on count
         this.updateMotivationalMessageByCount(count);
 
-        // Update goal progress
-        this.updateGoalProgress();
+        // Update goal progress (pass count to avoid recalculation)
+        this.updateGoalProgress(count);
     },
 
     // Update motivational message based on count
@@ -328,8 +332,12 @@ var app = {
     },
 
     // Update goal progress
-    updateGoalProgress: function() {
-        var todayCount = this.getTodayCount();
+    updateGoalProgress: function(todayCount) {
+        // If todayCount is not provided, calculate it
+        if (typeof todayCount === 'undefined') {
+            todayCount = this.getTodayCount();
+        }
+
         var dailyGoal = this.getDailyGoal();
 
         // Update goal display
