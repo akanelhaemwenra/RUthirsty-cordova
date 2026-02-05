@@ -14,7 +14,15 @@ var app = {
 
     // Application Constructor
     initialize: function() {
-        document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+        // Check if Cordova is available
+        if (window.cordova) {
+            // Running in Cordova environment
+            document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+        } else {
+            // Running in browser, initialize directly
+            console.log('Running in browser mode');
+            this.initApp();
+        }
     },
 
     // deviceready Event Handler
