@@ -1,0 +1,180 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+.app {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    background: white;
+    border-radius: 20px;
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 28px;
+    color: #667eea;
+    margin-bottom: 20px;
+}
+
+.today-stats {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 16px;
+    color: #666;
+}
+
+.today-stats .count {
+    font-size: 48px;
+    font-weight: bold;
+    color: #667eea;
+    line-height: 1;
+}
+
+.main-content {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.check-in-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 50%;
+    width: 180px;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+    margin: 0 auto;
+}
+
+.check-in-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.check-in-btn .btn-icon {
+    font-size: 60px;
+    margin-bottom: 10px;
+}
+
+.check-in-btn .btn-text {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.records-section {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.records-section h2 {
+    font-size: 20px;
+    color: #667eea;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.records-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.empty-message {
+    text-align: center;
+    color: #999;
+    padding: 30px 20px;
+    font-size: 14px;
+}
+
+.record-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.2s ease;
+}
+
+.record-item:last-child {
+    border-bottom: none;
+}
+
+.record-item:active {
+    background: #f8f8f8;
+}
+
+.record-info {
+    flex: 1;
+}
+
+.record-date {
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.record-time {
+    font-size: 14px;
+    color: #999;
+}
+
+.delete-btn {
+    background: #ff4757;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.delete-btn:active {
+    background: #ee5a6f;
+    transform: scale(0.95);
+}
+
+/* Scrollbar styling */
+.records-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.records-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.records-list::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 10px;
+}
+
+.records-list::-webkit-scrollbar-thumb:hover {
+    background: #764ba2;
+}
