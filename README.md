@@ -1,155 +1,405 @@
-# 喝水打卡 Cordova 应用
+# 💧 喝水打卡应用 v1.0.4
 
-一个简单的喝水打卡移动应用，使用 Cordova 框架开发，支持 Android 平台。
+## 🎉 最新更新
 
-## 功能特性
+### v1.0.4 新增功能
 
-- ✅ 一键打卡记录喝水时间
-- ✅ 显示今日喝水次数统计
-- ✅ 查看所有历史喝水记录
-- ✅ 删除单条记录
-- ✅ 数据本地持久化存储
+#### 📅 日历显示
+- 实时显示当前日期（年月日）
+- 显示当前星期
+- 每分钟自动更新
+- 美观的卡片式设计
 
-## 技术栈
+#### 🌤️ 天气显示
+- 实时显示当前温度
+- 显示天气状况（晴、多云、雨等）
+- 动态天气图标（8种）
+- 基于地理位置的智能定位
+- 30分钟智能缓存
 
-- Apache Cordova
-- 原生 HTML5/CSS3/JavaScript
-- localStorage API
+#### 💡 智能天气提醒
+根据天气自动调整喝水建议：
+- 炎热天气：提醒多补充水分
+- 温暖天气：提醒保持水分
+- 寒冷天气：建议喝温水
+- 下雨天：个性化提醒
+- 晴天：鼓励保持活力
 
-## 项目结构
+## 📱 应用截图
 
 ```
-RUthirsty-cordova/
-├── config.xml              # Cordova 配置文件
-├── package.json            # 项目依赖配置
-├── www/                    # 应用源代码
-│   ├── index.html         # 主界面
-│   ├── css/
-│   │   └── index.css      # 样式文件
-│   ├── js/
-│   │   └── index.js       # 应用逻辑
-│   └── img/               # 图片资源
-├── platforms/             # 平台相关代码（自动生成）
-└── plugins/               # Cordova 插件（自动生成）
+┌─────────────────────────────────────┐
+│         💧 喝水打卡                  │
+│                                     │
+│  ┌──────────┐    ┌──────────┐     │
+│  │ 📅       │    │ ☀️       │     │
+│  │ 2024年   │    │ 22°C     │     │
+│  │ 2月7日   │    │ 晴       │     │
+│  │ 星期三   │    │          │     │
+│  └──────────┘    └──────────┘     │
+│                                     │
+│         今日已喝水                  │
+│            8                        │
+│            次                       │
+│                                     │
+│      今日总量：2000 ml              │
+│                                     │
+│      每日目标 8 / 8 次 ⚙️          │
+│      ████████████████ 100%         │
+│                                     │
+│  阳光明媚，多喝水保持活力！☀️       │
+│                                     │
+│         [💧 打卡喝水]               │
+│                                     │
+│      📋 喝水记录                    │
+│  ┌─────────────────────────────┐  │
+│  │ 📅 2024-02-07  🕐 14:30:00  │  │
+│  │ 💧 250 ml          [删除]   │  │
+│  └─────────────────────────────┘  │
+└─────────────────────────────────────┘
 ```
 
-## 开发环境要求
+## ✨ 核心功能
 
-- Node.js (推荐 v14 或更高版本)
-- npm 或 yarn
-- Android SDK (用于 Android 平台构建)
-- Java JDK 11 或更高版本
+### 基础功能
+- ✅ 一键打卡喝水
+- ✅ 记录喝水量（可自定义）
+- ✅ 今日统计显示（次数+总量）
+- ✅ 历史记录查看
+- ✅ 记录删除功能
+- ✅ 数据持久化存储
 
-## 安装步骤
+### 高级功能
+- ✅ 每日目标设置（6/8/10/12次）
+- ✅ 进度追踪显示
+- ✅ 激励消息系统
+- ✅ 日历显示（NEW）
+- ✅ 天气显示（NEW）
+- ✅ 智能天气提醒（NEW）
 
-1. 克隆项目到本地
+### 界面特色
+- ✅ 精美渐变设计
+- ✅ 流畅动画效果
+- ✅ 响应式布局
+- ✅ 深色模式支持
+
+## 🚀 快速开始
+
+### 在浏览器中使用
+
 ```bash
-git clone <repository-url>
+# 克隆项目
+git clone https://github.com/charketh/RUthirsty-cordova.git
 cd RUthirsty-cordova
+
+# 在浏览器中打开
+open www/index.html
 ```
-
-2. 安装依赖
-```bash
-npm install
-```
-
-3. 添加 Android 平台
-```bash
-npx cordova platform add android
-```
-
-## 构建和运行
-
-### 在浏览器中测试（开发模式）
-```bash
-npx cordova serve
-```
-然后在浏览器中访问 http://localhost:8000
-
-注意：浏览器模式下 cordova.js 不会加载，但核心功能仍可测试。
 
 ### 构建 Android APK
+
+#### 方式1：使用自动化脚本（推荐）
+
+```bash
+# 检查环境
+python cordova-apk-builder/scripts/build_apk.py
+
+# 构建调试版本
+python cordova-apk-builder/scripts/build_apk.py
+
+# 构建发布版本
+python cordova-apk-builder/scripts/build_apk.py --release \
+  --keystore my-key.keystore --alias myapp
+```
+
+#### 方式2：手动构建
+
+```bash
+# 安装依赖
+npm install
+
+# 添加 Android 平台
+npx cordova platform add android
+
+# 构建 APK
+npx cordova build android
+
+# APK 位置
+# platforms/android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+## ⚙️ 配置天气功能
+
+### 步骤1：获取 API Key
+
+1. 访问 [OpenWeatherMap](https://openweathermap.org/api)
+2. 注册免费账号
+3. 获取 API Key（免费限额：60次/分钟）
+
+### 步骤2：配置到应用
+
+打开 `www/js/index.js`，找到两处 `YOUR_API_KEY_HERE`：
+
+```javascript
+// 第 548 行附近
+var apiKey = 'YOUR_API_KEY_HERE'; // 替换为你的 key
+
+// 第 556 行附近
+var apiKey = 'YOUR_API_KEY_HERE'; // 替换为你的 key
+```
+
+### 步骤3：重新构建
+
 ```bash
 npx cordova build android
 ```
 
-构建完成后，APK 文件位于：
-`platforms/android/app/build/outputs/apk/debug/app-debug.apk`
+### 不配置的影响
 
-### 在 Android 设备或模拟器上运行
+- ❌ 天气显示 "天气信息不可用"
+- ✅ 日历功能正常使用
+- ✅ 其他功能不受影响
+
+## 📚 文档
+
+### 快速文档
+- [日历天气功能总结](日历天气功能总结.md) - 快速总结
+- [v1.0.4版本说明](v1.0.4版本说明.md) - 版本发布说明
+- [快速入门指南](QUICK_START_GUIDE.md) - 中文快速入门
+
+### 详细文档
+- [日历天气功能说明](日历天气功能说明.md) - 完整功能文档
+- [日历天气功能演示](日历天气功能演示.md) - 功能演示说明
+- [v1.0.4功能完成报告](v1.0.4功能完成报告.md) - 完成总结
+- [更新日志](更新日志.md) - 版本更新记录
+
+### 测试工具
+- [测试日历天气功能.html](测试日历天气功能.html) - 交互式测试页面
+
+### APK 构建文档
+- [Cordova APK Builder Skill](cordova-apk-builder/README.md) - 构建技能说明
+- [文档索引](DOCUMENTATION_INDEX.md) - 完整文档索引
+
+## 🎯 使用场景
+
+### 场景1：日常使用
+
+```
+早上 7:00
+📅 2024年2月7日 星期三
+☀️ 18°C 晴
+💬 阳光明媚，多喝水保持活力！
+
+→ 点击打卡，输入 250ml
+→ 今日已喝水 1 次，总量 250ml
+```
+
+### 场景2：炎热天气
+
+```
+中午 12:00
+📅 2024年2月7日 星期三
+☀️ 32°C 晴
+💬 天气炎热，记得多喝水补充水分！🔥
+
+→ 看到高温提醒，增加饮水
+→ 今日已喝水 5 次，总量 1250ml
+```
+
+### 场景3：寒冷天气
+
+```
+晚上 6:00
+📅 2024年2月7日 星期三
+❄️ 5°C 晴
+💬 天气寒冷，温水更适合哦！❄️
+
+→ 收到温水建议，更加贴心
+→ 今日已喝水 8 次，总量 2000ml
+→ 完成每日目标！🎉
+```
+
+## 📊 技术栈
+
+### 前端技术
+- HTML5
+- CSS3（渐变、动画、Flexbox）
+- JavaScript（ES5）
+- localStorage（数据持久化）
+
+### API 集成
+- OpenWeatherMap API（天气数据）
+- Geolocation API（地理定位）
+
+### 移动端
+- Apache Cordova
+- cordova-plugin-geolocation
+
+## 🎨 设计特色
+
+### 视觉设计
+- 渐变背景（紫色主题）
+- 卡片式布局
+- 流畅动画效果
+- 响应式设计
+
+### 交互设计
+- 一键打卡
+- 悬停反馈
+- 加载动画
+- 成功提示
+
+### 用户体验
+- 清晰的信息层次
+- 友好的错误提示
+- 智能的天气提醒
+- 流畅的操作体验
+
+## 📱 兼容性
+
+### 浏览器支持
+- ✅ Chrome 90+
+- ✅ Firefox 88+
+- ✅ Safari 14+
+- ✅ Edge 90+
+
+### 移动端支持
+- ✅ Android 5.0+
+- ✅ iOS 12+
+
+### 响应式设计
+- ✅ 桌面端（>480px）：水平排列
+- ✅ 移动端（≤480px）：垂直排列
+
+## 🔧 开发
+
+### 环境要求
+
+**必需**：
+- Node.js 14+
+- npm 6+
+
+**可选（构建 APK）**：
+- Java JDK 17
+- Android Studio
+- Android SDK (API 33+)
+- Gradle
+
+### 安装依赖
+
 ```bash
-npx cordova run android
+npm install
 ```
 
-确保：
-- Android 设备已通过 USB 连接并启用了开发者模式
-- 或者已启动 Android 模拟器
+### 开发命令
 
-## 使用说明
+```bash
+# 添加平台
+npx cordova platform add android
 
-1. **打卡喝水**：点击中间的大圆形按钮记录当前喝水时间
-2. **查看统计**：顶部显示今日已喝水次数
-3. **查看记录**：底部列表显示所有历史记录（最新的在前）
-4. **删除记录**：点击每条记录右侧的"删除"按钮
+# 构建
+npx cordova build android
 
-## 数据存储
+# 运行到设备
+npx cordova run android --device
 
-应用使用浏览器的 localStorage API 存储数据，数据格式：
-
-```javascript
-{
-  records: [
-    {
-      timestamp: 1234567890000,  // Unix 时间戳
-      date: "2026-02-05",        // 日期
-      time: "10:30:25"           // 时间
-    },
-    ...
-  ]
-}
+# 清理
+npx cordova clean android
 ```
 
-## 配置说明
+### 项目结构
 
-### config.xml 主要配置
+```
+RUthirsty-cordova/
+├── www/                    # 应用源代码
+│   ├── index.html         # 主页面
+│   ├── css/
+│   │   └── index.css      # 样式文件
+│   └── js/
+│       └── index.js       # 主逻辑
+├── cordova-apk-builder/   # APK 构建技能
+│   ├── scripts/
+│   │   └── build_apk.py   # 自动化构建脚本
+│   └── references/        # 参考文档
+├── config.xml             # Cordova 配置
+├── package.json           # 项目配置
+└── 文档/                  # 各种文档
+```
 
-- **应用 ID**: com.ruthirsty.app
-- **应用名称**: 喝水打卡
-- **版本**: 1.0.0
-- **最低 Android SDK**: 22 (Android 5.1)
-- **目标 Android SDK**: 33 (Android 13)
+## 🐛 已知问题
 
-## 故障排除
+### 1. 地理定位
+- 首次使用需要授权位置权限
+- 某些设备可能定位失败（自动使用北京）
+- 定位超时设置为10秒
 
-### 常见问题
+### 2. 天气API
+- 需要配置 OpenWeatherMap API Key
+- 需要网络连接
+- 免费账户有请求限制
+- 缓存可能导致数据延迟（最多30分钟）
 
-1. **cordova 命令未找到**
-   ```bash
-   npm install -g cordova
-   ```
+### 3. 浏览器限制
+- 某些浏览器可能不支持地理定位
+- 需要 HTTPS 才能使用地理定位（生产环境）
 
-2. **Android SDK 路径未配置**
-   设置环境变量：
-   ```bash
-   export ANDROID_HOME=/path/to/android/sdk
-   export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
-   ```
+## 🔮 未来计划
 
-3. **Gradle 构建失败**
-   确保已安装 Java JDK 11 或更高版本
+### v1.0.5（短期）
+- [ ] 手动选择城市
+- [ ] 更多天气信息（湿度、风速）
+- [ ] 根据天气调整每日目标
+- [ ] 天气历史记录
 
-## 开发计划
+### v1.1.0（中期）
+- [ ] 天气预报（3-7天）
+- [ ] 喝水量与天气分析
+- [ ] 多城市支持
+- [ ] 天气提醒推送
 
-- [ ] 添加每日喝水目标设置
-- [ ] 添加喝水提醒功能
-- [ ] 添加数据统计图表
-- [ ] 支持自定义喝水量
-- [ ] 添加数据导出功能
+### v2.0.0（长期）
+- [ ] iOS 版本
+- [ ] 主题自定义
+- [ ] 健康数据分析
+- [ ] 社交分享功能
 
-## 许可证
+## 📞 支持
 
-ISC
+### 获取帮助
 
-## 贡献
+1. **查看文档**
+   - [日历天气功能说明](日历天气功能说明.md)
+   - [快速入门指南](QUICK_START_GUIDE.md)
 
-欢迎提交 Issue 和 Pull Request！
+2. **运行测试**
+   - [测试日历天气功能.html](测试日历天气功能.html)
+
+3. **查看示例**
+   - [日历天气功能演示](日历天气功能演示.md)
+
+### 报告问题
+
+如发现问题，请提供：
+- 问题描述
+- 复现步骤
+- 错误信息
+- 环境信息（浏览器/设备/版本）
+
+## 📄 许可证
+
+MIT License
+
+## 🙏 致谢
+
+感谢使用喝水打卡应用！
+
+本应用旨在帮助用户养成健康的喝水习惯，通过智能提醒和数据追踪，让喝水变得更加简单和有趣。
+
+---
+
+**版本**：v1.0.4
+**发布日期**：2024-02-07
+**开发工具**：Claude Code
+**状态**：✅ 已发布
+
+**保持健康，多喝水！💧**

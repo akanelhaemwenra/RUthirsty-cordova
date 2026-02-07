@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: https://ssl.gstatic.com 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: https://ssl.gstatic.com https://api.openweathermap.org 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content: https:;">
     <title>喝水打卡</title>
     <link rel="stylesheet" type="text/css" href="css/index.css">
 </head>
@@ -11,10 +11,37 @@
     <div class="app">
         <div class="header">
             <h1>💧 喝水打卡</h1>
+
+            <!-- 日历和天气信息区域 -->
+            <div class="info-widgets">
+                <div class="calendar-widget">
+                    <div class="calendar-icon">📅</div>
+                    <div class="calendar-info">
+                        <div class="calendar-date" id="calendarDate">2024年1月1日</div>
+                        <div class="calendar-weekday" id="calendarWeekday">星期一</div>
+                    </div>
+                </div>
+
+                <div class="weather-widget" id="weatherWidget">
+                    <div class="weather-icon" id="weatherIcon">🌤️</div>
+                    <div class="weather-info">
+                        <div class="weather-temp" id="weatherTemp">--°C</div>
+                        <div class="weather-desc" id="weatherDesc">加载中...</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="today-stats">
                 <p>今日已喝水</p>
                 <p class="count" id="todayCount">0</p>
                 <p>次</p>
+            </div>
+
+            <!-- 今日总量显示 -->
+            <div class="today-total">
+                <span class="total-label">今日总量：</span>
+                <span class="total-amount" id="todayTotal">0</span>
+                <span class="total-unit">ml</span>
             </div>
 
             <!-- 目标进度区域 -->

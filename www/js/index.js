@@ -53,9 +53,14 @@ var app = {
             }
         });
 
+        // Initialize calendar and weather
+        this.updateCalendar();
+        this.updateWeather();
+
         // Load and display records
         this.loadRecords();
         this.updateTodayCount();
+        this.updateTodayTotal();  // Initialize total amount
         this.updateGoalProgress();
 
         // Update motivational message
@@ -66,6 +71,16 @@ var app = {
         setInterval(function() {
             self.updateMotivationalMessage();
         }, 5000);
+
+        // Update calendar every minute
+        setInterval(function() {
+            self.updateCalendar();
+        }, 60000);
+
+        // Update weather every 30 minutes
+        setInterval(function() {
+            self.updateWeather();
+        }, 1800000);
     },
 
     // Update motivational message
@@ -110,10 +125,27 @@ var app = {
     // Check in - record a water drinking event
     checkIn: function() {
         var now = new Date();
+
+        // Ask user for water amount
+        var amount = prompt('💧 记录本次喝水量\n\n请输入毫升数（常用：200小杯 | 250标准杯 | 500大杯）', '250');
+
+        // If user cancels, don't record
+        if (amount === null) {
+            return;
+        }
+
+        // Parse and validate amount
+        amount = parseInt(amount);
+        if (isNaN(amount) || amount <= 0) {
+            alert('请输入有效的水量（大于0的数字）');
+            return;
+        }
+
         var record = {
             timestamp: now.getTime(),
             date: this.formatDate(now),
-            time: this.formatTime(now)
+            time: this.formatTime(now),
+            amount: amount  // Add water amount
         };
 
         // Get existing records
@@ -128,6 +160,7 @@ var app = {
         // Update UI
         this.loadRecords();
         this.updateTodayCount();
+        this.updateTodayTotal();  // Update total amount
 
         // Visual feedback
         this.showCheckInFeedback();
@@ -214,10 +247,12 @@ var app = {
         var html = '';
         for (var i = 0; i < records.length; i++) {
             var record = records[i];
+            var amount = record.amount || 250; // Default 250ml for old records
             html += '<div class="record-item" style="animation-delay: ' + (i * 0.05) + 's">';
             html += '  <div class="record-info">';
             html += '    <div class="record-date">' + record.date + '</div>';
             html += '    <div class="record-time">' + record.time + '</div>';
+            html += '    <div class="record-amount">' + amount + ' ml</div>';
             html += '  </div>';
             html += '  <button class="delete-btn" data-timestamp="' + record.timestamp + '">删除</button>';
             html += '</div>';
@@ -257,6 +292,7 @@ var app = {
             // Update UI
             self.loadRecords();
             self.updateTodayCount();
+            self.updateTodayTotal();  // Update total amount after deletion
         }, 300); // Match animation duration
     },
 
@@ -450,6 +486,240 @@ var app = {
                 message.parentNode.removeChild(message);
             }
         }, 2000);
+    },
+
+    // Update today's total water amount
+    updateTodayTotal: function() {
+        var records = this.getRecords();
+        var today = this.formatDate(new Date());
+        var total = 0;
+
+        for (var i = 0; i < records.length; i++) {
+            if (records[i].date === today) {
+                var amount = records[i].amount || 250; // Default 250ml for old records
+                total += amount;
+            }
+        }
+
+        var totalElement = document.getElementById('todayTotal');
+        if (totalElement) {
+            var oldTotal = parseInt(totalElement.textContent) || 0;
+
+            // Animate total change
+            if (total !== oldTotal) {
+                totalElement.style.animation = 'none';
+                setTimeout(function() {
+                    totalElement.style.animation = 'countUpdate 0.5s ease-out';
+                }, 10);
+            }
+
+            totalElement.textContent = total;
+        }
+    },
+
+    // Update calendar display
+    updateCalendar: function() {
+        var now = new Date();
+        var weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+
+        var year = now.getFullYear();
+        var month = now.getMonth() + 1;
+        var day = now.getDate();
+        var weekday = weekdays[now.getDay()];
+
+        var dateElement = document.getElementById('calendarDate');
+        var weekdayElement = document.getElementById('calendarWeekday');
+
+        if (dateElement) {
+            dateElement.textContent = year + '年' + month + '月' + day + '日';
+        }
+        if (weekdayElement) {
+            weekdayElement.textContent = weekday;
+        }
+    },
+
+    // Update weather display
+    updateWeather: function() {
+        var weatherWidget = document.getElementById('weatherWidget');
+        var weatherIcon = document.getElementById('weatherIcon');
+        var weatherTemp = document.getElementById('weatherTemp');
+        var weatherDesc = document.getElementById('weatherDesc');
+
+        // Add loading state
+        if (weatherWidget) {
+            weatherWidget.classList.add('loading');
+        }
+
+        // Try to get user's location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                this.fetchWeatherByLocation.bind(this),
+                this.handleLocationError.bind(this),
+                { timeout: 10000, enableHighAccuracy: false }
+            );
+        } else {
+            // Fallback to default location (Beijing)
+            this.fetchWeatherByCity('Beijing');
+        }
+    },
+
+    // Fetch weather by geolocation
+    fetchWeatherByLocation: function(position) {
+        var lat = position.coords.latitude;
+        var lon = position.coords.longitude;
+
+        // OpenWeatherMap API key (free tier)
+        var apiKey = 'YOUR_API_KEY_HERE'; // Users should replace this
+        var url = 'https://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon + '&units=metric&lang=zh_cn&appid=' + apiKey;
+
+        this.fetchWeatherData(url);
+    },
+
+    // Fetch weather by city name
+    fetchWeatherByCity: function(city) {
+        var apiKey = 'YOUR_API_KEY_HERE'; // Users should replace this
+        var url = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&units=metric&lang=zh_cn&appid=' + apiKey;
+
+        this.fetchWeatherData(url);
+    },
+
+    // Fetch weather data from API
+    fetchWeatherData: function(url) {
+        var self = this;
+
+        // Check if we have cached weather data (cache for 30 minutes)
+        var cachedWeather = localStorage.getItem('weatherCache');
+        var cacheTime = localStorage.getItem('weatherCacheTime');
+        var now = new Date().getTime();
+
+        if (cachedWeather && cacheTime && (now - parseInt(cacheTime)) < 1800000) {
+            // Use cached data
+            var weatherData = JSON.parse(cachedWeather);
+            self.displayWeather(weatherData);
+            return;
+        }
+
+        // Fetch new data
+        fetch(url)
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Weather API error');
+                }
+                return response.json();
+            })
+            .then(function(data) {
+                // Cache the data
+                localStorage.setItem('weatherCache', JSON.stringify(data));
+                localStorage.setItem('weatherCacheTime', now.toString());
+
+                self.displayWeather(data);
+            })
+            .catch(function(error) {
+                console.error('Weather fetch error:', error);
+                self.displayWeatherError();
+            });
+    },
+
+    // Display weather data
+    displayWeather: function(data) {
+        var weatherWidget = document.getElementById('weatherWidget');
+        var weatherIcon = document.getElementById('weatherIcon');
+        var weatherTemp = document.getElementById('weatherTemp');
+        var weatherDesc = document.getElementById('weatherDesc');
+
+        if (weatherWidget) {
+            weatherWidget.classList.remove('loading');
+        }
+
+        if (data && data.main && data.weather && data.weather.length > 0) {
+            var temp = Math.round(data.main.temp);
+            var description = data.weather[0].description;
+            var iconCode = data.weather[0].icon;
+
+            // Map weather icon codes to emojis
+            var iconMap = {
+                '01d': '☀️', '01n': '🌙',
+                '02d': '⛅', '02n': '☁️',
+                '03d': '☁️', '03n': '☁️',
+                '04d': '☁️', '04n': '☁️',
+                '09d': '🌧️', '09n': '🌧️',
+                '10d': '🌦️', '10n': '🌧️',
+                '11d': '⛈️', '11n': '⛈️',
+                '13d': '❄️', '13n': '❄️',
+                '50d': '🌫️', '50n': '🌫️'
+            };
+
+            var emoji = iconMap[iconCode] || '🌤️';
+
+            if (weatherIcon) {
+                weatherIcon.textContent = emoji;
+            }
+            if (weatherTemp) {
+                weatherTemp.textContent = temp + '°C';
+            }
+            if (weatherDesc) {
+                weatherDesc.textContent = description;
+            }
+
+            // Update motivational message based on weather
+            this.updateWeatherBasedMessage(temp, description);
+        } else {
+            this.displayWeatherError();
+        }
+    },
+
+    // Display weather error
+    displayWeatherError: function() {
+        var weatherWidget = document.getElementById('weatherWidget');
+        var weatherIcon = document.getElementById('weatherIcon');
+        var weatherTemp = document.getElementById('weatherTemp');
+        var weatherDesc = document.getElementById('weatherDesc');
+
+        if (weatherWidget) {
+            weatherWidget.classList.remove('loading');
+        }
+
+        if (weatherIcon) {
+            weatherIcon.textContent = '🌤️';
+        }
+        if (weatherTemp) {
+            weatherTemp.textContent = '--°C';
+        }
+        if (weatherDesc) {
+            weatherDesc.textContent = '天气信息不可用';
+        }
+    },
+
+    // Handle location error
+    handleLocationError: function(error) {
+        console.log('Location error:', error.message);
+        // Fallback to Beijing
+        this.fetchWeatherByCity('Beijing');
+    },
+
+    // Update motivational message based on weather
+    updateWeatherBasedMessage: function(temp, description) {
+        var messageElement = document.getElementById('motivationalText');
+        if (!messageElement) return;
+
+        var message = '';
+
+        // Temperature-based messages
+        if (temp > 30) {
+            message = '天气炎热，记得多喝水补充水分！🔥';
+        } else if (temp > 25) {
+            message = '温暖的天气，保持水分很重要！☀️';
+        } else if (temp < 10) {
+            message = '天气寒冷，温水更适合哦！❄️';
+        } else if (description.includes('雨')) {
+            message = '下雨天也要记得喝水哦！🌧️';
+        } else if (description.includes('晴')) {
+            message = '阳光明媚，多喝水保持活力！☀️';
+        } else {
+            message = '保持健康，多喝水！💧';
+        }
+
+        messageElement.textContent = message;
     }
 };
 
